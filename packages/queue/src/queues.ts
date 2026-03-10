@@ -1,7 +1,7 @@
 import { Queue } from 'bullmq';
 import { connection } from './client';
 
-export const automationQueue = new Queue('prospect-automation', { connection });
+export const automationQueue = new Queue('prospect-automation', { connection: connection as any });
 
 export async function addProspectToAutomation(prospectId: string) {
   await automationQueue.add(

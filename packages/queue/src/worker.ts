@@ -44,7 +44,7 @@ export function startWorker() {
 
       console.log(`✅ [Job ${job.id}] Automatically moved ${prospect.name} to Contacted stage and sent WhatsApp!`);
     },
-    { connection }
+    { connection: connection as any }
   );
 
   worker.on('failed', (job, err) => {
