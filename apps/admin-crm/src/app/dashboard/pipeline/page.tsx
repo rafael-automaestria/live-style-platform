@@ -8,11 +8,11 @@ export default async function PipelinePage() {
   const firstStageId = stages.length > 0 ? stages[0].id : '';
 
   // We convert dates to strings to pass them safely from Server to Client component
-  const safeStages = stages.map(stage => ({
+  const safeStages = stages.map((stage: any) => ({
     ...stage,
     createdAt: stage.createdAt.toISOString(),
     updatedAt: stage.updatedAt.toISOString(),
-    prospects: stage.prospects.map(p => ({
+    prospects: stage.prospects.map((p: any) => ({
       ...p,
       contactInfo: p.contactInfo ? JSON.stringify(p.contactInfo) : null,
       createdAt: p.createdAt.toISOString(),

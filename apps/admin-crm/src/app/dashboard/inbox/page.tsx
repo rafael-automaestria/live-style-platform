@@ -5,12 +5,12 @@ export default async function InboxPage() {
   const prospects = await getInboxData();
 
   // Convert dates to strings for passing to Client Component safely
-  const safeProspects = prospects.map(p => ({
+  const safeProspects = prospects.map((p: any) => ({
     ...p,
     createdAt: p.createdAt.toISOString(),
     updatedAt: p.updatedAt.toISOString(),
     contactInfo: p.contactInfo ? JSON.stringify(p.contactInfo) : null,
-    messages: p.messages.map(m => ({
+    messages: p.messages.map((m: any) => ({
       ...m,
       createdAt: m.createdAt.toISOString(),
     }))
