@@ -1,0 +1,30 @@
+{
+  "name": "live-style-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "worker": "tsx packages/queue/src/worker.ts"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "prettier": "^3.0.0",
+    "tsx": "^4.21.0",
+    "turbo": "^1.12.0"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.11.1",
+    "bcryptjs": "^3.0.3",
+    "next-auth": "^5.0.0-beta.30"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
