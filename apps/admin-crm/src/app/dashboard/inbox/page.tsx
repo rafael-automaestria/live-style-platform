@@ -1,6 +1,8 @@
 import { getInboxData } from "@/app/actions/inbox";
 import { InboxClient } from "@/components/inbox-client";
 
+export const dynamic = 'force-dynamic';
+
 export default async function InboxPage() {
   const prospects = await getInboxData();
 

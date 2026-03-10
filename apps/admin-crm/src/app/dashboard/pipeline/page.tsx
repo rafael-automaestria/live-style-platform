@@ -3,6 +3,8 @@ import { getPipelineData } from "@/app/actions/pipeline";
 import { PipelineBoard } from "@/components/pipeline-board";
 import { AddProspectForm } from "@/components/add-prospect-form";
 
+export const dynamic = 'force-dynamic';
+
 export default async function PipelinePage() {
   const stages = await getPipelineData();
   const firstStageId = stages.length > 0 ? stages[0].id : '';
