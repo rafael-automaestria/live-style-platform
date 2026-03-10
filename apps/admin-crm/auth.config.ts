@@ -1,4 +1,10 @@
-import type { NextAuthConfig } from "next-auth";
+import type { NextAuthConfig, User } from "next-auth";
+
+declare module "next-auth" {
+  interface User {
+    role?: string;
+  }
+}
 
 export const authConfig = {
   pages: {
