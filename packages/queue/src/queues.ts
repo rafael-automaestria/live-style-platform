@@ -1,9 +1,12 @@
 import { Queue } from 'bullmq';
 import { connection } from './client';
 
-export const automationQueue = new Queue('prospect-automation', { connection: connection as any });
+// Safely instantiate queue only if connection exists (not during Vercel build)
+export const automationQueue = connection ? new Queue('prospect-automation', { connection: connection as any }) : null as any;
 
 export async function addProspectToAutomation(prospectId: string) {
+  if (!automationQueue) return;
+  
   await automationQueue.add(
     'contact-new-lead',
     { prospectId },
