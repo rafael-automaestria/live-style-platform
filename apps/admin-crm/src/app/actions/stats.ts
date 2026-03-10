@@ -20,7 +20,7 @@ export async function getDashboardStats() {
     }
   });
 
-  const funnelData = prospectsByStage.map(stage => ({
+  const funnelData = prospectsByStage.map((stage: { name: string; _count: { prospects: number } }) => ({
     name: stage.name,
     value: stage._count.prospects
   }));
