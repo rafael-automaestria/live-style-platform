@@ -68,7 +68,7 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
       <div className="w-80 border-r border-zinc-800 flex flex-col bg-zinc-900/30">
         <div className="p-4 border-b border-zinc-800">
           <Input 
-            placeholder="Search conversations..." 
+            placeholder="Pesquisar conversas..." 
             className="bg-zinc-950 border-zinc-800 text-sm h-9"
           />
         </div>
@@ -90,7 +90,7 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
                       </Avatar>
                       {/* Platform Icon Badge */}
                       <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border border-zinc-900 flex items-center justify-center text-[8px] bg-zinc-800 font-bold uppercase">
-                        {prospect.platform[0]}
+                        {prospect.platform ? prospect.platform[0] : '?'}
                       </div>
                     </div>
                     <div className="flex-1 overflow-hidden">
@@ -102,7 +102,7 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-xs text-zinc-400 truncate pr-2">
-                          {lastMessage ? lastMessage.content : 'No messages yet'}
+                          {lastMessage ? lastMessage.content : 'Sem mensagens ainda'}
                         </span>
                       </div>
                     </div>
@@ -113,7 +113,7 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
             })}
             {prospects.length === 0 && (
               <div className="p-8 text-center text-zinc-500 text-sm">
-                No prospects found.
+                Nenhum prospect encontrado.
               </div>
             )}
           </div>
@@ -141,7 +141,7 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
             </div>
             <div className="flex gap-2">
               <Badge variant="outline" className="border-blue-900 text-blue-400 bg-blue-950/30">
-                Stage: {selectedProspect.stage.name}
+                Estágio: {selectedProspect.stage.name}
               </Badge>
             </div>
           </div>
@@ -151,7 +151,7 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
             <div className="space-y-6">
               {selectedProspect.messages.length === 0 ? (
                 <div className="h-full flex items-center justify-center text-zinc-500 text-sm">
-                  Start the conversation!
+                  Inicie a conversa!
                 </div>
               ) : (
                 selectedProspect.messages.map((msg) => {
@@ -160,14 +160,14 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
                     <div key={msg.id} className={`flex gap-3 ${isOutbound ? 'flex-row-reverse' : ''}`}>
                       <Avatar className="h-8 w-8 mt-1 shrink-0">
                         {isOutbound ? (
-                           <AvatarFallback className="bg-violet-600 text-white text-xs">YOU</AvatarFallback>
+                           <AvatarFallback className="bg-violet-600 text-white text-xs">VOCÊ</AvatarFallback>
                         ) : (
                            <AvatarFallback className="bg-blue-600/20 text-blue-500 text-xs uppercase">{selectedProspect.name.substring(0, 2)}</AvatarFallback>
                         )}
                       </Avatar>
                       <div className={`max-w-[70%] ${isOutbound ? 'text-right' : 'text-left'}`}>
                         <span className={`text-xs text-zinc-500 mb-1 block ${isOutbound ? 'mr-1' : 'ml-1'}`}>
-                          {isOutbound ? 'You' : selectedProspect.name} • {formatTime(msg.createdAt)}
+                          {isOutbound ? 'Você' : selectedProspect.name} • {formatTime(msg.createdAt)}
                         </span>
                         <div className={`p-3 rounded-2xl text-sm ${
                           isOutbound 
@@ -189,7 +189,7 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
             <div className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 rounded-xl p-2 focus-within:ring-1 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all opacity-100" style={{ opacity: isPending ? 0.7 : 1 }}>
               <input 
                 type="text" 
-                placeholder={`Message ${selectedProspect.name}...`}
+                placeholder={`Mensagem para ${selectedProspect.name}...`}
                 className="flex-1 bg-transparent border-none focus:outline-none text-zinc-100 text-sm px-2"
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
@@ -207,13 +207,13 @@ export function InboxClient({ initialProspects }: { initialProspects: Prospect[]
               </button>
             </div>
             <p className="text-xs text-zinc-500 mt-2 text-center">
-              Sending as WhatsApp message.
+              Enviando como mensagem de WhatsApp.
             </p>
           </div>
         </div>
       ) : (
         <div className="flex-1 flex items-center justify-center bg-zinc-950">
-          <p className="text-zinc-500">Select a conversation to start messaging</p>
+          <p className="text-zinc-500">Selecione uma conversa para começar a enviar mensagens</p>
         </div>
       )}
     </div>

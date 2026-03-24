@@ -3,15 +3,22 @@
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { moveProspect } from "@/app/actions/pipeline";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { LeadDetailsSheet } from "./lead-details-sheet";
 
 type Prospect = {
   id: string;
   name: string;
+  email?: string;
+  whatsapp?: string;
   platform: string;
   stageId: string;
   status: string;
+  properties?: any;
+  utms?: any;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type PipelineStage = {
@@ -23,8 +30,10 @@ type PipelineStage = {
 
 export function PipelineBoard({ initialStages }: { initialStages: PipelineStage[] }) {
   const [isPending, startTransition] = useTransition();
+  const [selectedLead, setSelectedLead] = useState<Prospect | null>(null);
 
-  const handleMove = (prospectId: string, currentOrder: number, direction: 'next' | 'prev') => {
+  const handleMove = (e: React.MouseEvent, prospectId: string, currentOrder: number, direction: 'next' | 'prev') => {
+    e.stopPropagation(); // Don't open details when moving
     const currentIndex = initialStages.findIndex(s => s.order === currentOrder);
     const targetStage = direction === 'next' ? initialStages[currentIndex + 1] : initialStages[currentIndex - 1];
 
@@ -59,7 +68,11 @@ export function PipelineBoard({ initialStages }: { initialStages: PipelineStage[
             {/* Column Body / Cards */}
             <div className="flex-1 overflow-y-auto p-3 space-y-3">
               {stage.prospects.map(prospect => (
-                <div key={prospect.id} className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 p-4 rounded-lg shadow-sm transition-all hover:shadow-md">
+                <div 
+                  key={prospect.id} 
+                  onClick={() => setSelectedLead(prospect)}
+                  className="bg-zinc-900 border border-zinc-800 hover:border-blue-500/50 p-4 rounded-lg shadow-sm transition-all hover:shadow-md cursor-pointer group/card"
+                >
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
@@ -68,7 +81,7 @@ export function PipelineBoard({ initialStages }: { initialStages: PipelineStage[
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-semibold text-zinc-100">{prospect.name}</p>
+                        <p className="text-sm font-semibold text-zinc-100 group-hover/card:text-blue-400 transition-colors">{prospect.name}</p>
                         <p className="text-xs text-zinc-500">{prospect.platform}</p>
                       </div>
                     </div>
@@ -84,7 +97,7 @@ export function PipelineBoard({ initialStages }: { initialStages: PipelineStage[
                           variant="outline" 
                           size="sm" 
                           className="h-6 px-2 py-0 text-xs border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
-                          onClick={() => handleMove(prospect.id, stage.order, 'prev')}
+                          onClick={(e) => handleMove(e, prospect.id, stage.order, 'prev')}
                         >
                           &larr;
                         </Button>
@@ -94,7 +107,7 @@ export function PipelineBoard({ initialStages }: { initialStages: PipelineStage[
                           variant="outline" 
                           size="sm" 
                           className="h-6 px-2 py-0 text-xs border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
-                          onClick={() => handleMove(prospect.id, stage.order, 'next')}
+                          onClick={(e) => handleMove(e, prospect.id, stage.order, 'next')}
                         >
                           &rarr;
                         </Button>
@@ -106,13 +119,22 @@ export function PipelineBoard({ initialStages }: { initialStages: PipelineStage[
               
               {stage.prospects.length === 0 && (
                 <div className="h-24 border-2 border-dashed border-zinc-800/50 rounded-lg flex items-center justify-center text-zinc-600 text-sm">
-                  No prospects
+                  Sem prospects
                 </div>
               )}
             </div>
           </div>
         ))}
       </div>
+
+      {/* Lead Details Slide-over */}
+      {selectedLead && (
+        <LeadDetailsSheet 
+          lead={selectedLead} 
+          isOpen={!!selectedLead} 
+          onClose={() => setSelectedLead(null)} 
+        />
+      )}
     </div>
   );
 }

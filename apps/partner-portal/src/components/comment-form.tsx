@@ -9,7 +9,7 @@ export function CommentForm({ userId, postId }: { userId: string, postId: string
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-sm mt-8">
-      <h3 className="font-semibold text-zinc-100 mb-4">Leave a Reply</h3>
+      <h3 className="font-semibold text-zinc-100 mb-4">Deixe uma Resposta</h3>
       <form action={async (formData) => {
         setIsPending(true);
         await createForumComment(formData);
@@ -19,7 +19,7 @@ export function CommentForm({ userId, postId }: { userId: string, postId: string
         <input type="hidden" name="postId" value={postId} />
         <textarea 
           name="content" 
-          placeholder="Share your thoughts..." 
+          placeholder="Compartilhe seus pensamentos..." 
           required 
           rows={3}
           className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-zinc-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 resize-none text-sm" 
@@ -30,7 +30,7 @@ export function CommentForm({ userId, postId }: { userId: string, postId: string
             disabled={isPending}
             className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold px-8"
           >
-            {isPending ? 'Posting...' : 'Post Reply'}
+            {isPending ? 'Postando...' : 'Postar Resposta'}
           </Button>
         </div>
       </form>

@@ -16,11 +16,11 @@ export default async function PostDetailsPage({ params }: { params: Promise<{ po
   const post = await getForumPostDetails(resolvedParams.postId);
 
   if (!post) {
-    return <div className="p-8 text-center text-zinc-500">Post not found.</div>;
+    return <div className="p-8 text-center text-zinc-500">Postagem não encontrada.</div>;
   }
 
   const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
+    return new Intl.DateTimeFormat('pt-BR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
   };
 
   return (
@@ -33,11 +33,11 @@ export default async function PostDetailsPage({ params }: { params: Promise<{ po
                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center">
                 <span className="text-white font-bold text-xs tracking-tighter">LS</span>
               </div>
-              <span className="font-bold text-lg tracking-tight">Partner Area</span>
+              <span className="font-bold text-lg tracking-tight">Área do Parceiro</span>
              </Link>
              <div className="h-6 w-px bg-zinc-800"></div>
              <Link href="/dashboard/forum" className="font-medium text-zinc-400 hover:text-amber-500 transition-colors">
-               Community Forum
+               Fórum da Comunidade
              </Link>
              <span className="text-zinc-600">/</span>
              <span className="text-zinc-300 text-sm truncate max-w-[200px]">{post.title}</span>
@@ -50,7 +50,7 @@ export default async function PostDetailsPage({ params }: { params: Promise<{ po
           
           <Link href="/dashboard/forum" className="text-zinc-500 hover:text-amber-500 transition-colors flex items-center gap-2 text-sm font-medium mb-8">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-            Back to Discussions
+            Voltar para as Discussões
           </Link>
 
           {/* Original Post */}
@@ -76,7 +76,7 @@ export default async function PostDetailsPage({ params }: { params: Promise<{ po
 
           <h3 className="font-bold text-xl text-zinc-100 mb-6 flex items-center gap-2">
             <span className="w-1.5 h-6 rounded-full bg-amber-500 inline-block"></span>
-            Replies ({post.comments.length})
+            Respostas ({post.comments.length})
           </h3>
 
           {/* Comments List */}
@@ -101,7 +101,7 @@ export default async function PostDetailsPage({ params }: { params: Promise<{ po
             ))}
 
             {post.comments.length === 0 && (
-              <p className="text-zinc-500 italic text-center py-4">No replies yet. Be the first to answer!</p>
+              <p className="text-zinc-500 italic text-center py-4">Nenhuma resposta ainda. Seja o primeiro a responder!</p>
             )}
           </div>
 

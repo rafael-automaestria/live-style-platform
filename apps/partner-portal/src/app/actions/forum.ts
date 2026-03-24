@@ -45,6 +45,13 @@ export async function createForumComment(formData: FormData) {
 
   if (!content || !authorId || !postId) return;
 
+  // Verify author exists to prevent foreign key violation
+  const author = await prisma.user.findUnique({ where: { id: authorId } });
+  if (!author) {
+    console.error('Author not found for forum comment:', authorId);
+    return;
+  }
+
   await prisma.forumComment.create({
     data: {
       content,
@@ -62,6 +69,13 @@ export async function createForumPost(formData: FormData) {
   const authorId = formData.get('authorId') as string;
 
   if (!title || !content || !authorId) return;
+
+  // Verify author exists to prevent foreign key violation
+  const author = await prisma.user.findUnique({ where: { id: authorId } });
+  if (!author) {
+    console.error('Author not found for forum post:', authorId);
+    return;
+  }
 
   await prisma.forumPost.create({
     data: {

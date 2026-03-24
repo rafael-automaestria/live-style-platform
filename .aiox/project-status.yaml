@@ -1,11 +1,17 @@
 status:
-  branch: null
-  modifiedFiles: []
-  recentCommits: []
+  branch: main
+  modifiedFiles:
+    - .aiox/sessions/recent.json
+    - .aiox/sessions/unknown.json
+    - .turbo/daemon/675cdf0831ab0fab-turbo.log.2026-03-10
+  modifiedFilesTotalCount: 3
+  recentCommits:
+    - arrumando build
+    - arrumando
   currentEpic: null
   currentStory: null
-  lastUpdate: '2026-03-10T13:36:21.751Z'
-  isGitRepo: false
-timestamp: 1773149781753
+  lastUpdate: '2026-03-10T17:41:17.919Z'
+  isGitRepo: true
+timestamp: 1773164477920
 ttl: 60
-gitFingerprint: null
+gitFingerprint: 1773155472899.274:1773160128405.6733

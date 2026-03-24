@@ -3,16 +3,27 @@
 import { prisma } from '@live-style/database';
 import { revalidatePath } from 'next/cache';
 
-export async function getPipelineData() {
-  const stages = await prisma.pipelineStage.findMany({
+export async function getPipelineData(funnelId?: string) {
+  const stages = await prisma.stage.findMany({
     orderBy: { order: 'asc' },
     include: {
-      prospects: {
-        orderBy: { createdAt: 'desc' }
+      leads: {
+        where: funnelId ? { funnelId } : undefined,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          funnel: true,
+          stage: true
+        }
       }
     }
   });
   return stages;
+}
+
+export async function getFunnels() {
+  return await prisma.funnel.findMany({
+    orderBy: { createdAt: 'asc' }
+  });
 }
 
 export async function addProspect(formData: FormData) {
@@ -24,11 +35,14 @@ export async function addProspect(formData: FormData) {
     throw new Error('Missing required fields');
   }
 
-  await prisma.prospect.create({
+  // Get first available funnel to associate the lead
+  const funnel = await prisma.funnel.findFirst();
+
+  await prisma.lead.create({
     data: {
       name,
-      platform,
       stageId,
+      funnelId: funnel?.id || '',
       status: 'NEW',
     }
   });
@@ -37,7 +51,7 @@ export async function addProspect(formData: FormData) {
 }
 
 export async function moveProspect(prospectId: string, newStageId: string) {
-  await prisma.prospect.update({
+  await prisma.lead.update({
     where: { id: prospectId },
     data: { stageId: newStageId }
   });

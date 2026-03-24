@@ -4,7 +4,7 @@ import { prisma } from '@live-style/database';
 import { revalidatePath } from 'next/cache';
 
 export async function getInboxData() {
-  const prospects = await prisma.prospect.findMany({
+  const leads = await prisma.lead.findMany({
     include: {
       messages: {
         orderBy: { createdAt: 'asc' }
@@ -13,24 +13,24 @@ export async function getInboxData() {
     },
     orderBy: { updatedAt: 'desc' }
   });
-  return prospects;
+  return leads;
 }
 
-export async function sendMessage(prospectId: string, content: string, channel: string = 'WHATSAPP') {
+export async function sendMessage(leadId: string, content: string, channel: string = 'WHATSAPP') {
   if (!content.trim()) return;
 
   await prisma.message.create({
     data: {
-      prospectId,
+      leadId,
       content,
       channel,
       direction: 'OUTBOUND'
     }
   });
 
-  // Update prospect's updatedAt so it bumps to the top of the inbox
-  await prisma.prospect.update({
-    where: { id: prospectId },
+  // Update lead's updatedAt so it bumps to the top of the inbox
+  await prisma.lead.update({
+    where: { id: leadId },
     data: { updatedAt: new Date() }
   });
 

@@ -1,11 +1,12 @@
-﻿import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  // --- Admin User ---
   const adminPassword = await bcrypt.hash('admin123', 10);
-  await prisma.user.upsert({
+  const adminUser = await prisma.user.upsert({
     where: { email: 'admin@livestyle.com' },
     update: {},
     create: {
@@ -16,6 +17,7 @@ async function main() {
     },
   });
 
+  // --- Partner User ---
   const partnerPassword = await bcrypt.hash('partner123', 10);
   const partnerUser = await prisma.user.upsert({
     where: { email: 'partner@livestyle.com' },
@@ -28,23 +30,50 @@ async function main() {
     },
   });
 
-  const stages = [
-    { name: 'New Leads', order: 1 },
-    { name: 'Contacted', order: 2 },
-    { name: 'Evaluating', order: 3 },
-    { name: 'Approved', order: 4 },
-    { name: 'Onboarding', order: 5 },
+  // --- CRM Funnels (Global Filters) ---
+  const funnelNames = [
+    'E-book',
+    'Indicação',
+    'Orgânico',
+    'Perpétuo',
+    'Lançamento',
+    'Social Selling',
   ];
 
-  for (const stage of stages) {
-    const existing = await prisma.pipelineStage.findFirst({
-      where: { name: stage.name }
+  for (const fName of funnelNames) {
+    await prisma.funnel.upsert({
+      where: { id: `funnel-${fName.toLowerCase().replace(/\s+/g, '-')}` },
+      update: { name: fName },
+      create: {
+        id: `funnel-${fName.toLowerCase().replace(/\s+/g, '-')}`,
+        name: fName,
+      },
     });
-    if (!existing) {
-      await prisma.pipelineStage.create({
-        data: stage
-      });
-    }
+  }
+
+  // --- CRM Stages (Global / Shared across all funnels) ---
+  const stageNames = [
+    'Compra Aprovada',
+    'Preencheu Formulário',
+    'Contato Inicial',
+    'Enviar Instruções da Live',
+    'Aguardando Live Teste',
+    'Cadastro no Backstage',
+    'Cadastro na Plataforma',
+    'Ativos',
+    'Outras Etapas (Rejeitados / Arquivados)',
+  ];
+
+  for (let i = 0; i < stageNames.length; i++) {
+    await prisma.stage.upsert({
+      where: { id: `stage-global-${i + 1}` },
+      update: { name: stageNames[i], order: i + 1 },
+      create: {
+        id: `stage-global-${i + 1}`,
+        name: stageNames[i],
+        order: i + 1,
+      },
+    });
   }
 
   // --- Seed Partner Portal Courses ---
@@ -91,7 +120,7 @@ async function main() {
     });
   }
 
-  console.log('Seed completed.');
+  console.log('Seed completed successfully for CRM 2.0 (Shared Stages).');
 }
 
 main().catch(e => {

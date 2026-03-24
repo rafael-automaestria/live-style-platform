@@ -25,42 +25,63 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   // Relations
-  enrollments   Enrollment[]
-  posts         ForumPost[]
-  comments      ForumComment[]
+  enrollments      Enrollment[]
+  posts            ForumPost[]
+  comments         ForumComment[]
+  responsibleLeads Lead[]         @relation("ResponsibleLeads")
 }
 
-// --- CRM Models ---
+// --- CRM Models (v2.0) ---
 
-model Prospect {
-  id           String         @id @default(uuid())
-  name         String
-  platform     String         // e.g., "TikTok", "YouTube", "Instagram"
-  contactInfo  Json?          // { phone, socialHandle, email }
-  status       String         @default("NEW")
+model Funnel {
+  id        String   @id @default(uuid())
+  name      String   // E-book, Indicação, Orgânico, etc.
+  leads     Lead[]
   
-  stageId      String
-  stage        PipelineStage  @relation(fields: [stageId], references: [id])
-  
-  messages     Message[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model PipelineStage {
-  id        String     @id @default(uuid())
-  name      String
+model Stage {
+  id        String   @id @default(uuid())
+  name      String   // Compra Aprovada, Preencheu Formulário, etc.
   order     Int
-  prospects Prospect[]
+  leads     Lead[]
   
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lead {
+  id                String   @id @default(uuid())
+  name              String
+  email             String?  @unique
+  whatsapp          String?
+  status            String   @default("NEW")
+  
+  // Pipeline Relations
+  funnelId          String
+  funnel            Funnel   @relation(fields: [funnelId], references: [id])
+  stageId           String
+  stage             Stage    @relation(fields: [stageId], references: [id])
+  
+  // Assignment
+  responsibleId     String?
+  responsible       User?    @relation("ResponsibleLeads", fields: [responsibleId], references: [id])
+  
+  // Data (Notion/Typeform migration)
+  properties        Json     @default("{}") // All qualitative and custom fields
+  utms              Json?    // source, campaign, medium, etc.
+  
+  messages          Message[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Message {
   id         String   @id @default(uuid())
-  prospectId String
-  prospect   Prospect @relation(fields: [prospectId], references: [id])
+  leadId     String
+  lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
   channel    String   // "WHATSAPP", "INSTAGRAM", "TIKTOK", "EMAIL"
   direction  String   // "INBOUND", "OUTBOUND"
   content    String   @db.Text
@@ -145,4 +166,3 @@ model ForumComment {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
-

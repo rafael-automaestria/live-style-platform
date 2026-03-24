@@ -4,25 +4,25 @@ import { prisma } from '@live-style/database';
 
 export async function getDashboardStats() {
   const [totalProspects, activePartners, totalMessages] = await Promise.all([
-    prisma.prospect.count(),
+    prisma.lead.count(),
     prisma.user.count({ where: { role: 'PARTNER' } }),
     prisma.message.count(),
   ]);
 
   // Get count of prospects grouped by pipeline stage
-  const prospectsByStage = await prisma.pipelineStage.findMany({
+  const prospectsByStage = await prisma.stage.findMany({
     orderBy: { order: 'asc' },
     select: {
       name: true,
       _count: {
-        select: { prospects: true }
+        select: { leads: true }
       }
     }
   });
 
-  const funnelData = prospectsByStage.map((stage: { name: string; _count: { prospects: number } }) => ({
+  const funnelData = prospectsByStage.map((stage: { name: string; _count: { leads: number } }) => ({
     name: stage.name,
-    value: stage._count.prospects
+    value: stage._count.leads
   }));
 
   // Simulate some monthly growth data for the line chart
